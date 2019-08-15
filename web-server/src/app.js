@@ -1,27 +1,25 @@
-const express = require('express') // express is a function
+const path = require('path')
+const express = require("express"); // express is a function
 
-const app = express()
+const app = express();
+const publicDirectoryPath = path.join(__dirname, '../public/');
 
-// app.com
-app.get('', (req, res) => {
-  res.send('<h1>Weather</h1>')
-})
+// path to public folder which has index, about, and help htmls
+app.use(express.static(publicDirectoryPath))
 
-// app.com/help
-app.get('/help', (req, res) => {
-  res.send('Help Section')
-})
+// // app.com
+// app.get("", (req, res) => {
+//   res.send('<h1>fjlaejf</h1>');
+// });
 
-// app.com/about
-app.get('/about', (req, res) => {
-  res.send('About Section')
-})
- // app.com/weather
-app.get('/weather', (req, res) => {
-  res.send('Weather Section')
-})
-
+// app.com/weather
+app.get("/weather", (req, res) => {
+  res.send({
+    forecast: "Weather is nice",
+    location: "ARlington, TX"
+  });
+});
 
 app.listen(3000, () => {
-  console.log('Server is up on port 3000!')
-}) // 3000 common dev port
+  console.log("Server is up on port 3000!");
+}); // 3000 common dev port
