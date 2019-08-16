@@ -1,11 +1,20 @@
 const path = require('path')
 const express = require("express"); // express is a function
+const hbs = require('hbs')
 
 const app = express();
-const publicDirectoryPath = path.join(__dirname, '../public/');
 
-app.set('view engine' , 'hbs')
-// path to public folder which has index, about, and help htmls
+// Define paths for Express config
+const publicDirectoryPath = path.join(__dirname, '../public/');
+const viewsPath = path.join(__dirname, '../templates/views')
+const partialsPath = path.join(__dirname, '../templates/partials')
+
+// setup handlebars engine and views location
+app.set('view engine' , 'hbs') // The 'view engine' just makes it so that whenever we call res.render(), we don't have to include the extension:
+app.set('views', viewsPath) // The 'views' is just the path to where your templates are so res.render() knows where to look for the files.
+hbs.registerPartials(partialsPath)
+
+// Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
 // app.com
@@ -27,6 +36,7 @@ app.get("/about", (req, res) => {
 // app.com/help
 app.get("/help", (req, res) => {
   res.render('help', {
+    helpText: 'This is some helpful text',
     title: 'Help',
     name: 'Khoi Nguyen'
   })
@@ -39,6 +49,23 @@ app.get("/weather", (req, res) => {
     location: "ARlington, TX"
   });
 });
+
+app.get('/help/*', (req, res) => {
+  res.render('404', {
+    title: '404',
+    name: 'Khoi Nguyen',
+    errorMessage: 'HELP ARTICLE NOT FOUND'
+  })
+})
+
+// any other path will lead to 404 page not found
+app.get('*', (req, res) => { // if doesn't match above routes => 404 page not found
+  res.render('404', {
+    title: '404',
+    name: 'Khoi Nguyen',
+    errorMessage: 'Page Not Found'
+  })
+})
 
 app.listen(3000, () => {
   console.log("Server is up on port 3000!");
